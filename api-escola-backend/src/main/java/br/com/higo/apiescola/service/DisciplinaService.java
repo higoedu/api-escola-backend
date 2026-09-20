@@ -105,6 +105,22 @@ public class DisciplinaService {
             throw new RuntimeException("O campo 'Tem nota' é obrigatório!");
         }
 
+        if (disciplina.getTipoNota() == TipoNota.CONCEITO
+                && Boolean.TRUE.equals(disciplina.getTemNota())) {
+
+            throw new IllegalArgumentException(
+                    "Uma disciplina com avaliação por conceito não pode possuir nota."
+            );
+        }
+
+        if (disciplina.getTipoNota() == TipoNota.NOTA
+                && Boolean.FALSE.equals(disciplina.getTemNota())) {
+
+            throw new IllegalArgumentException(
+                    "Uma disciplina com avaliação por nota deve possuir nota."
+            );
+        }
+
         if (Boolean.TRUE.equals(disciplina.getTemNota())) {
 
             if (disciplina.getNota() == null) {
@@ -128,22 +144,6 @@ public class DisciplinaService {
 
         if (disciplina.getTipoNota() == null) {
             throw new RuntimeException("Tipo de nota é obrigatório!");
-        }
-
-        if (disciplina.getTipoNota() == TipoNota.CONCEITO
-                && Boolean.TRUE.equals(disciplina.getTemNota())) {
-
-            throw new IllegalArgumentException(
-                    "Uma disciplina com avaliação por conceito não pode possuir nota."
-            );
-        }
-
-        if (disciplina.getTipoNota() == TipoNota.NOTA
-                && Boolean.FALSE.equals(disciplina.getTemNota())) {
-
-            throw new IllegalArgumentException(
-                    "Uma disciplina com avaliação por nota deve possuir nota."
-            );
         }
     }
 
