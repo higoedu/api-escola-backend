@@ -3,6 +3,7 @@ package br.com.higo.apiescola.controller;
 import br.com.higo.apiescola.dto.AlunoRequestDTO;
 import br.com.higo.apiescola.dto.AlunoResponseDTO;
 import br.com.higo.apiescola.service.AlunoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<AlunoResponseDTO> salvar (@RequestBody AlunoRequestDTO request) {
+    public ResponseEntity<AlunoResponseDTO> salvar (@Valid @RequestBody AlunoRequestDTO request) {
         AlunoResponseDTO salvo = alunoService.salvar(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
@@ -40,7 +41,7 @@ public class AlunoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AlunoResponseDTO> alterar(@PathVariable Long id, @RequestBody AlunoRequestDTO request) {
+    public ResponseEntity<AlunoResponseDTO> alterar(@PathVariable Long id, @Valid @RequestBody AlunoRequestDTO request) {
         AlunoResponseDTO alterado = alunoService.alterar(id, request);
 
         return ResponseEntity.ok(alterado);
