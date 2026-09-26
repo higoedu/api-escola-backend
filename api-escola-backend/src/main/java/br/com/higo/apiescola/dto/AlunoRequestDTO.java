@@ -8,24 +8,24 @@ import lombok.Data;
 
 @Data
 public class AlunoRequestDTO {
-    @NotBlank(message = "Nome do aluno é obrigatório!nr")
+    @NotBlank(message = "Nome do aluno é obrigatório!")
     private String aluno;
 
-    @NotNull(message = "Ano de ingresso do aluno é obrigatório!nr1")
-    @Min(value = 1, message = "Ano de ingresso do aluno deve ser maior que zero!nr2")
+    @NotNull(message = "Ano de ingresso do aluno é obrigatório!")
+    @Min(value = 1, message = "Ano de ingresso do aluno deve ser maior que zero!")
     private Integer anoIngresso;
 
-    @NotNull(message = "Semestre de ingresso do aluno é obrigatório!nr1")
-    @Min(value = 1, message = "Semestre de ingresso do aluno deve ser 1 ou 2!nr2")
-    @Max(value = 2, message = "Semestre de ingresso do aluno deve ser 1 ou 2!nr3")
+    @NotNull(message = "Semestre de ingresso do aluno é obrigatório!")
+    @Min(value = 1, message = "Semestre de ingresso do aluno deve ser 1 ou 2!")
+    @Max(value = 2, message = "Semestre de ingresso do aluno deve ser 1 ou 2!")
     private Integer semestreIngresso;
 
-    @NotBlank(message = "Situação do aluno é obrigatório!nr")
+    @NotBlank(message = "Situação do aluno é obrigatório!")
     private String situacaoAluno;
 
-    @NotNull(message = "disciplinaId é obrigatórionr")
+    @NotNull(message = "disciplinaId é obrigatória!")
     private Long disciplinaId;
 
-    @NotBlank(message = "Nome do curso é obrigatório!nr")
+    @NotBlank(message = "Nome do curso é obrigatório!")
     private String curso;
 }
