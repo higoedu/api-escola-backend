@@ -196,8 +196,6 @@ pm.test("Deve retornar o objeto do aluno criado com os dados corretos", function
 
 </details>
 
----
-
 <details>
 <summary>🧪 4. Cobertura de Testes Automatizados (JUnit 5 & Mockito)</summary>
 
