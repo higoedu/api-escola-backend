@@ -83,6 +83,98 @@ Com a aplicação rodando, você pode visualizar e testar todos os endpoints int
 
 ---
 
+#### 💡 Exemplo Prático: Mapeamento, Validação e Teste de Endpoint (Postman)
+
+Abaixo está demonstrada a arquitetura ponta a ponta que valida e processa o cadastro de um Aluno vinculado a uma Disciplina existente no banco de dados:
+
+<details>
+<summary>📂 1. Camada de Entrada e Validação (Controller & DTO)</summary>
+
+O `Controller` intercepta a requisição e ativa o Bean Validation com a anotação `@Valid`. O `AlunoRequestDTO` restringe as entradas e define mensagens de erro customizadas interceptadas pelo `GlobalExceptionHandler`:
+
+```java
+// No AlunoController.java
+@PostMapping
+public ResponseEntity<AlunoResponseDTO> salvar (@Valid @RequestBody AlunoRequestDTO request) {
+    AlunoResponseDTO salvo = alunoService.salvar(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+}
+
+// No AlunoRequestDTO.java
+@Data
+public class AlunoRequestDTO {
+    @NotBlank(message = "Nome do aluno é obrigatório!")
+    private String aluno;
+
+    @NotNull(message = "Ano de ingresso do aluno é obrigatório!")
+    @Min(value = 1, message = "Ano de ingresso do aluno deve ser maior que zero!")
+    private Integer anoIngresso;
+
+    @NotNull(message = "Semestre de ingresso do aluno é obrigatório!")
+    @Min(value = 1, message = "Semestre de ingresso do aluno deve ser 1 ou 2!")
+    @Max(value = 2, message = "Semestre de ingresso do aluno deve ser 1 ou 2!")
+    private Integer semestreIngresso;
+
+    @NotBlank(message = "Situação do aluno é obrigatório!")
+    private String situacaoAluno;
+
+    @NotNull(message = "disciplinaId é obrigatória!")
+    private Long disciplinaId;
+
+    @NotBlank(message = "Nome do curso é obrigatório!")
+    private String curso;
+}
+```
+</details>
+
+<details>
+<summary>📂 2. Camada de Regras de Negócio (Service)</summary>
+
+O `Service` recebe o DTO validado, efetua a busca relacional da `Disciplina` por ID lançando uma exceção tratada se não encontrada, e mapeia o resultado para o DTO de resposta:
+
+```java
+public AlunoResponseDTO salvar(AlunoRequestDTO request) {
+    Aluno aluno = new Aluno();
+
+    aluno.setAluno(request.getAluno());
+    aluno.setAnoIngresso(request.getAnoIngresso());
+    aluno.setSemestreIngresso(request.getSemestreIngresso());
+    aluno.setSituacaoAluno(request.getSituacaoAluno());
+    aluno.setDataIngresso(new Date());
+
+    Disciplina disciplina = disciplinaRepository
+            .findById(request.getDisciplinaId())
+            .orElseThrow(() -> new RuntimeException("Disciplina não encontrada!"));
+
+    aluno.setDisciplina(disciplina);
+    aluno.setCurso(request.getCurso());
+
+    aluno = alunoRepository.save(aluno);
+
+    return toResponseDTO(aluno);
+}
+```
+</details>
+
+<details>
+<summary>🚀 3. Teste de Endpoint no Postman</summary>
+
+**Estrutura do Payload de Entrada (`POST /alunos`)**
+```json
+{
+    "aluno": "João da Silva",
+    "anoIngresso": 2026,
+    "semestreIngresso": 1,
+    "situacaoAluno": "Ativo",
+    "disciplinaId": 2,
+    "curso": "Engenharia de Computação"
+}
+```
+*Se as regras de validação forem violadas (ex: `semestreIngresso = 0`), a API responderá de forma padronizada através do `GlobalExceptionHandler` explicitando os erros capturados.*
+</details>
+
+---
+
 ### 📈 Conecte-se Comigo
 
 * **LinkedIn:** [linkedin.com/in/higoeduardo](https://www.linkedin.com/in/higoeduardo/)
