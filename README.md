@@ -351,5 +351,4 @@ void deveSalvarAlunoComSucesso() {
 * **LinkedIn:** [linkedin.com/in/higoeduardo](https://www.linkedin.com/in/higoeduardo/)
 * **E-mail:** [higoedu@gmail.com]
 
----
 💻 *Desenvolvido por Higo Eduardo como portfólio técnico Full Stack.*
