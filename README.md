@@ -171,6 +171,29 @@ public AlunoResponseDTO salvar(AlunoRequestDTO request) {
 }
 ```
 *Se as regras de validação forem violadas (ex: `semestreIngresso = 0`), a API responderá de forma padronizada através do `GlobalExceptionHandler` explicitando os erros capturados.*
+
+#### **Scripts de Validação Automatizada (Aba Scripts/Tests)**
+A integridade da resposta da API é testada automaticamente no Postman utilizando testes escritos em JavaScript para validar o Status Code e as propriedades do JSON retornado:
+
+```javascript
+pm.test("Deve retornar 201 Created", function () {
+    pm.response.to.have.status(201);
+});
+
+pm.test("Deve retornar o objeto do aluno criado com os dados corretos", function () {
+    const json = pm.response.json();
+
+    pm.expect(json.id).to.exist;
+    pm.expect(json.aluno).to.eql("João da Silva");
+    pm.expect(json.anoIngresso).to.eql(2026);
+    pm.expect(json.curso).to.eql("Engenharia de Computação");
+    pm.expect(json.semestreIngresso).to.eql(1);
+    pm.expect(json.situacaoAluno).to.eql("Ativo");
+    pm.expect(json.disciplinaId).to.eql(2);
+});
+```
+*Se as regras de validação do DTO forem violadas (ex: `semestreIngresso = 3`), os testes falharão automaticamente no Postman, acusando a quebra do contrato esperado.*
+
 </details>
 
 ---
