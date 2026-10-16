@@ -1,6 +1,6 @@
 # 🏫 Sistema Escolar - API Back-end
 
-Este repositório contém a API REST do Sistema Escolar, desenvolvida para gerenciar regras de negócio, persistência de dados e integrações da aplicação. O projeto foi construído utilizando boas práticas de desenvolvimento, arquitetura em camadas e soluções robustas para o ecossistema corporativo.
+Este repositório contém a API REST do Sistema Escolar, desenvolvida para gerenciar regras de negócio, persistência de dados e integrações da aplicação. O projeto foi construído utilizando boas práticas de desenvolvimento, arquitetura em camadas (Controller, Service, Repository) e padrões de projeto consolidados no mercado corporativo.
 
 ---
 
@@ -12,16 +12,19 @@ Este repositório contém a API REST do Sistema Escolar, desenvolvida para geren
 * **Banco de Dados:** Microsoft SQL Server (Produção/Desenvolvimento) | H2 Database (Testes)
 * **Gerenciador de Dependências:** Apache Maven
 * **Testes Automatizados:** JUnit 5 & Mockito
-* **Validações e Utilitários:** Postman (Testes de integração de endpoints)
+* **Documentação Interativa:** Swagger / OpenAPI 3
+* **Produtividade & Validação:** Lombok | Spring Boot Starter Validation (`@Valid`)
+* **Utilitários:** Postman (Testes de endpoints)
 
 ---
 
-### 🚀 Funcionalidades Principais
+### 🚀 Funcionalidades & Padrões Arquiteturais
 
-* **Operações CRUD Completas:** Gerenciamento de alunos, professores, turmas e notas.
-* **Regras de Negócio Implementadas:** Validação de matrículas, cálculo automático de médias e restrições de horários.
-* **Persistência Robusta:** Consultas otimizadas utilizando Spring Data JPA sobre banco relacional.
-* **Qualidade de Código:** Testes unitários cobrindo Services e Controllers com JUnit e Mockito.
+* **Padrão DTO (Data Transfer Object):** Implementação rigorosa de `RequestDTO` e `ResponseDTO` para desacoplar a camada de visão das entidades de banco de dados, protegendo a integridade da aplicação.
+* **Validação de Dados:** Uso do Bean Validation para garantir consistência nas entradas (`@NotNull`, `@Size`, `@Email`, etc.) antes de processar as regras de negócio.
+* **Tratamento Global de Erros:** Criação de um `GlobalExceptionHandler` utilizando `@ControllerAdvice` para capturar exceções da API e retornar respostas padronizadas e amigáveis ao cliente.
+* **Padronização com Enums:** Uso de tipos enumerados (`Enum`) para garantir consistência em dados estáticos (ex: Status, Turnos, Perfis).
+* **Operações CRUD Completas:** Gerenciamento otimizado de alunos, professores, turmas e notas com relacionamentos JPA.
 * **Segurança de Integração:** Configuração de políticas de CORS integrada para permitir a comunicação segura com o ecossistema Front-end.
 
 ---
@@ -52,7 +55,7 @@ Este repositório contém a API REST do Sistema Escolar, desenvolvida para geren
    *(Nota: Caso queira testar rapidamente sem configurar o SQL Server, você pode alterar o perfil do Spring para rodar o banco de dados H2 interno em memória).*
 
 #### **Compilação e Execução**
-1. Instale as dependências necessárias e compile o projeto através do Maven:
+1. Instale as dependências necessárias (incluindo o processamento do Lombok) e compile o projeto através do Maven:
    ```bash
    mvn clean install
    ```
@@ -61,6 +64,10 @@ Este repositório contém a API REST do Sistema Escolar, desenvolvida para geren
    mvn spring-boot:run
    ```
 *A API inicializará o servidor embutido Tomcat e estará disponível por padrão em `http://localhost:8080`.*
+
+#### **📄 Acessando a Documentação da API (Swagger)**
+Com a aplicação rodando, você pode visualizar e testar todos os endpoints interativamente acessando a interface do Swagger no navegador:
+`http://localhost:8080/swagger-ui/index.html` *(ou a rota padrão configurada na sua versão do OpenAPI)*.
 
 ---
 
