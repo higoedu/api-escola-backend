@@ -175,6 +175,156 @@ public AlunoResponseDTO salvar(AlunoRequestDTO request) {
 
 ---
 
+<details>
+<summary>🧪 4. Cobertura de Testes Automatizados (JUnit 5 & Mockito)</summary>
+
+Abaixo estão exemplificados os quatro cenários de testes automatizados implementados para validar as camadas de Controller, Service e DTO:
+
+#### **A. Teste de Integração WebMvc (Controller com Contexto HTTP)**
+Valida a rota HTTP, o comportamento do status `201 CREATED` e a correta interceptação do payload JSON pelo Spring:
+```java
+@Autowired
+private MockMvc mockMvc;
+
+@MockitoBean
+private AlunoService alunoService;
+
+@Test
+void deveSalvarAlunoComDadosValidos() throws Exception {
+    String json = """
+        {
+            "aluno": "João da Silva",
+            "anoIngresso": 2026,
+            "curso": "Engenharia de Computação",
+            "semestreIngresso": 1,
+            "situacaoAluno": "ATIVO",
+            "disciplinaId": 1
+        }
+        """;
+
+    AlunoResponseDTO alunoSalvo = new AlunoResponseDTO();
+
+    when(alunoService.salvar(any(AlunoRequestDTO.class))).thenReturn(alunoSalvo);
+
+    mockMvc.perform(
+                    post("/alunos")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json)
+            )
+            .andExpect(status().isCreated());
+
+    verify(alunoService).salvar(any(AlunoRequestDTO.class));
+}
+```
+
+#### **B. Teste Unitário Isolado do Controller**
+Valida o retorno do método do Controller garantindo o contrato e o empacotamento das respostas HTTP:
+```java
+@Mock
+private AlunoService alunoService;
+
+@InjectMocks
+private AlunoController alunoController;
+
+@BeforeEach
+void setUp() {
+    MockitoAnnotations.openMocks(this);
+}
+
+@Test
+void deveSalvarAluno() {
+    AlunoRequestDTO request = new AlunoRequestDTO();
+    AlunoResponseDTO salvo = new AlunoResponseDTO();
+
+    when(alunoService.salvar(request)).thenReturn(salvo);
+
+    ResponseEntity<AlunoResponseDTO> response = alunoController.salvar(request);
+
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertEquals(salvo, response.getBody());
+
+    verify(alunoService).salvar(request);
+}
+```
+
+#### **C. Teste Unitário de Validação do DTO (Jakarta Validation)**
+Isola e força a engine do Jakarta Bean Validation a validar as anotações do DTO (como limites de `@Min` e `@Max`):
+```java
+private Validator validator;
+
+@BeforeEach
+void configurarValidator() {
+    validator = Validation.buildDefaultValidatorFactory().getValidator();
+}
+
+@Test
+void deveRetornarMensagemAoInformarSemestreTres() {
+    AlunoRequestDTO dto = new AlunoRequestDTO();
+    dto.setSemestreIngresso(3); // Viola o teto máximo @Max(2)
+
+    var erros = validator.validateProperty(dto, "semestreIngresso");
+
+    assertFalse(erros.isEmpty());
+    assertTrue(erros.stream().anyMatch(erro -> 
+        erro.getMessage().contains("Semestre de ingresso do aluno deve ser 1 ou 2!")
+    ));
+}
+```
+
+#### **D. Teste Unitário Completo do Service (Regras de Negócio & Relacionamento)**
+Garante o fluxo ideal do negócio, mockando os repositórios JPA de `Aluno` e `Disciplina` para testar o mapeamento e amarração das chaves estrangeiras:
+```java
+@Mock
+private AlunoRepository alunoRepository;
+
+@Mock
+private DisciplinaRepository disciplinaRepository;
+
+private AlunoService alunoService;
+
+@BeforeEach
+void setUp() {
+    alunoService = new AlunoService(alunoRepository, disciplinaRepository);
+}
+
+@Test
+void deveSalvarAlunoComSucesso() {
+    AlunoRequestDTO request = new AlunoRequestDTO();
+    request.setAluno("João da Silva");
+    request.setAnoIngresso(2026);
+    request.setSemestreIngresso(1);
+    request.setSituacaoAluno("ATIVO");
+    request.setDisciplinaId(1L);
+    request.setCurso("Sistemas de Informação");
+
+    Disciplina disciplina = new Disciplina();
+    disciplina.setId(1L);
+
+    Aluno alunoSalvo = new Aluno();
+    alunoSalvo.setId(10L);
+    alunoSalvo.setAluno("João da Silva");
+    alunoSalvo.setAnoIngresso(2026);
+    alunoSalvo.setSemestreIngresso(1);
+    alunoSalvo.setSituacaoAluno("ATIVO");
+    alunoSalvo.setDisciplina(disciplina);
+    alunoSalvo.setCurso("Sistemas de Informação");
+
+    when(disciplinaRepository.findById(1L)).thenReturn(Optional.of(disciplina));
+    when(alunoRepository.save(any(Aluno.class))).thenReturn(alunoSalvo);
+
+    AlunoResponseDTO response = alunoService.salvar(request);
+
+    assertNotNull(response);
+    assertEquals(10L, response.getId());
+    assertEquals("João da Silva", response.getAluno());
+    assertEquals(1L, response.getDisciplinaId());
+
+    verify(disciplinaRepository).findById(1L);
+    verify(alunoRepository).save(any(Aluno.class));
+}
+```
+</details>
+
 ### 📈 Conecte-se Comigo
 
 * **LinkedIn:** [linkedin.com/in/higoeduardo](https://www.linkedin.com/in/higoeduardo/)
