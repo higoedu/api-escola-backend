@@ -83,7 +83,7 @@ Com a aplicação rodando, você pode visualizar e testar todos os endpoints int
 
 ---
 
-#### 💡 Exemplo Prático: Mapeamento, Validação e Teste de Endpoint (Postman)
+#### 💡 Exemplo Prático: Mapeamento, Validação e Teste de Endpoint
 
 Abaixo está demonstrada a arquitetura ponta a ponta que valida e processa o cadastro de um Aluno vinculado a uma Disciplina existente no banco de dados:
 
@@ -157,7 +157,7 @@ public AlunoResponseDTO salvar(AlunoRequestDTO request) {
 </details>
 
 <details>
-<summary>🚀 3. Teste de Endpoint no Postman</summary>
+<summary>🚀 3. Teste de Endpoint no Postman (Validação Automatizada)</summary>
 
 **Estrutura do Payload de Entrada (`POST /alunos`)**
 ```json
@@ -170,10 +170,10 @@ public AlunoResponseDTO salvar(AlunoRequestDTO request) {
     "curso": "Engenharia de Computação"
 }
 ```
-*Se as regras de validação forem violadas (ex: `semestreIngresso = 0`), a API responderá de forma padronizada através do `GlobalExceptionHandler` explicitando os erros capturados.*
+*Se as regras de validação forem violadas (ex: `semestreIngresso = 3`), a API responderá com o HTTP Status 400 (Bad Request) através do `GlobalExceptionHandler` explicitando os erros capturados.*
 
-#### **Scripts de Validação Automatizada (Aba Scripts/Tests)**
-A integridade da resposta da API é testada automaticamente no Postman utilizando testes escritos em JavaScript para validar o Status Code e as propriedades do JSON retornado:
+#### **Scripts de Validação Automatizada (Aba Scripts/Tests do Postman)**
+A integridade da resposta da API é testada automaticamente no Postman utilizando asserções JavaScript para validar o Status Code e o contrato do JSON retornado:
 
 ```javascript
 pm.test("Deve retornar 201 Created", function () {
@@ -192,17 +192,16 @@ pm.test("Deve retornar o objeto do aluno criado com os dados corretos", function
     pm.expect(json.disciplinaId).to.eql(2);
 });
 ```
-*Se as regras de validação do DTO forem violadas (ex: `semestreIngresso = 3`), os testes falharão automaticamente no Postman, acusando a quebra do contrato esperado.*
-
+*Se os dados forem inconsistentes ou a API falhar, os testes do Postman acusarão o erro instantaneamente.*
 </details>
 
 <details>
 <summary>🧪 4. Cobertura de Testes Automatizados (JUnit 5 & Mockito)</summary>
 
-Abaixo estão exemplificados os quatro cenários de testes automatizados implementados para validar as camadas de Controller, Service e DTO:
+O projeto adota uma rigorosa estratégia de testes automatizados, dividida entre testes de integração parciais da camada HTTP e testes unitários das regras de negócio isoladas:
 
 #### **A. Teste de Integração WebMvc (Controller com Contexto HTTP)**
-Valida a rota HTTP, o comportamento do status `201 CREATED` e a correta interceptação do payload JSON pelo Spring:
+Valida a rota HTTP, o comportamento do status `201 CREATED` e a correta interceptação e desserialização do payload JSON:
 ```java
 @Autowired
 private MockMvc mockMvc;
@@ -239,7 +238,7 @@ void deveSalvarAlunoComDadosValidos() throws Exception {
 ```
 
 #### **B. Teste Unitário Isolado do Controller**
-Valida o retorno do método do Controller garantindo o contrato e o empacotamento das respostas HTTP:
+Valida o retorno do método exposto pelo Controller, garantindo que o contrato e o empacotamento das respostas (`ResponseEntity`) sigam o padrão:
 ```java
 @Mock
 private AlunoService alunoService;
@@ -269,7 +268,7 @@ void deveSalvarAluno() {
 ```
 
 #### **C. Teste Unitário de Validação do DTO (Jakarta Validation)**
-Isola e força a engine do Jakarta Bean Validation a validar as anotações do DTO (como limites de `@Min` e `@Max`):
+Isola e força a execução da engine do Jakarta Bean Validation para atestar que as restrições restritivas (como os limites `@Min` e `@Max`) estão bloqueando entradas inválidas:
 ```java
 private Validator validator;
 
@@ -286,14 +285,14 @@ void deveRetornarMensagemAoInformarSemestreTres() {
     var erros = validator.validateProperty(dto, "semestreIngresso");
 
     assertFalse(erros.isEmpty());
-    assertTrue(erros.stream().anyMatch(erro -> 
-        erro.getMessage().contains("Semestre de ingresso do aluno deve ser 1 ou 2!")
+    assertTrue(erros.stream().anyMatch(erro ->
+            erro.getMessage().contains("Semestre de ingresso do aluno deve ser 1 ou 2!")
     ));
 }
 ```
 
 #### **D. Teste Unitário Completo do Service (Regras de Negócio & Relacionamento)**
-Garante o fluxo ideal do negócio, mockando os repositórios JPA de `Aluno` e `Disciplina` para testar o mapeamento e amarração das chaves estrangeiras:
+Garante o fluxo de negócio ponta a ponta, simulando o banco com mocks para testar o mapeamento de entidades e o vínculo relacional com a `Disciplina`:
 ```java
 @Mock
 private AlunoRepository alunoRepository;
@@ -346,9 +345,10 @@ void deveSalvarAlunoComSucesso() {
 ```
 </details>
 
-### 📈 Conecte-se Comigo
+---
 
-* **LinkedIn:** [linkedin.com/in/higoeduardo](https://www.linkedin.com/in/higoeduardo/)
-* **E-mail:** [higoedu@gmail.com]
+## 📈 Conecte-se Comigo
+* **LinkedIn:** [://linkedin.com](https://www.://linkedin.com/)
 
+---
 💻 *Desenvolvido por Higo Eduardo como portfólio técnico Full Stack.*
