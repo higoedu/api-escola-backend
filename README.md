@@ -35,7 +35,7 @@ O projeto adota uma arquitetura em camadas bem definida, separando as responsabi
 
 ### 🚀 Funcionalidades Principais
 
-* **Operações CRUD Completas:** Gerenciamento otimizado de alunos, professores, turmas e notas com relacionamentos JPA.
+* **Operações CRUD Completas:** Gerenciamento otimizado de alunos e disciplinas com relacionamentos JPA.
 * **Validação de Dados:** Uso rigoroso do Bean Validation para consistência nas entradas de dados (`@NotNull`, `@Size`, etc.).
 * **Qualidade de Código:** Testes unitários isolados e mockados cobrindo Services e Controllers com JUnit 5 e Mockito.
 
