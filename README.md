@@ -1,6 +1,6 @@
 # 🏫 Sistema Escolar - API Back-end
 
-Este repositório contém a API REST do Sistema Escolar, desenvolvida para gerenciar regras de negócio, persistência de dados e integrações da aplicação. O projeto foi construído utilizando boas práticas de desenvolvimento, arquitetura em camadas (Controller, Service, Repository) e padrões de projeto consolidados no mercado corporativo.
+Este repositório contém a API REST do Sistema Escolar, desenvolvida para gerenciar regras de negócio, persistência de dados e integrações da aplicação. O projeto foi construído utilizando boas práticas de desenvolvimento, testes automatizados e uma arquitetura em camadas altamente organizada.
 
 ---
 
@@ -18,14 +18,26 @@ Este repositório contém a API REST do Sistema Escolar, desenvolvida para geren
 
 ---
 
-### 🚀 Funcionalidades & Padrões Arquiteturais
+### 📂 Estrutura de Pastas e Arquitetura
 
-* **Padrão DTO (Data Transfer Object):** Implementação rigorosa de `RequestDTO` e `ResponseDTO` para desacoplar a camada de visão das entidades de banco de dados, protegendo a integridade da aplicação.
-* **Validação de Dados:** Uso do Bean Validation para garantir consistência nas entradas (`@NotNull`, `@Size`, `@Email`, etc.) antes de processar as regras de negócio.
-* **Tratamento Global de Erros:** Criação de um `GlobalExceptionHandler` utilizando `@ControllerAdvice` para capturar exceções da API e retornar respostas padronizadas e amigáveis ao cliente.
-* **Padronização com Enums:** Uso de tipos enumerados (`Enum`) para garantir consistência em dados estáticos (ex: Status, Turnos, Perfis).
+O projeto adota uma arquitetura em camadas bem definida, separando as responsabilidades de forma limpa:
+
+* 📂 **`controller`** - Camada de entrada da aplicação, responsável por expor os endpoints REST e receber as requisições HTTP.
+* 📂 **`dto`** (`RequestDTO`, `ResponseDTO`) - Objetos de transferência de dados usados para desacoplar as entidades de banco de dados da camada de visão, garantindo segurança e validação de payloads.
+* 📂 **`service`** - Camada de negócio central, onde residem as regras, validações e fluxos principais do sistema escolar.
+* 📂 **`repository`** - Camada de persistência que faz a interface direta com o banco de dados utilizando métodos e queries do Spring Data JPA.
+* 📂 **`entity`** - Classes que mapeiam as tabelas relacionais do banco de dados (Alunos, Professores, etc.) utilizando anotações JPA.
+* 📂 **`config`** (`CORS`, `OpenAPI`) - Classes de configuração global, responsável pela liberação de chamadas externas do Front-end e customização do Swagger.
+* 📂 **`exception`** (`GlobalExceptionHandler`) - Centralizador de tratamento de erros baseado em `@ControllerAdvice`, interceptando exceções e devolvendo respostas HTTP padronizadas e limpas.
+* 📂 **`enum`** - Tipos enumerados utilizados para padronizar dados estáticos e constantes do sistema com segurança.
+
+---
+
+### 🚀 Funcionalidades Principais
+
 * **Operações CRUD Completas:** Gerenciamento otimizado de alunos, professores, turmas e notas com relacionamentos JPA.
-* **Segurança de Integração:** Configuração de políticas de CORS integrada para permitir a comunicação segura com o ecossistema Front-end.
+* **Validação de Dados:** Uso rigoroso do Bean Validation para consistência nas entradas de dados (`@NotNull`, `@Size`, etc.).
+* **Qualidade de Código:** Testes unitários isolados e mockados cobrindo Services e Controllers com JUnit 5 e Mockito.
 
 ---
 
@@ -55,7 +67,7 @@ Este repositório contém a API REST do Sistema Escolar, desenvolvida para geren
    *(Nota: Caso queira testar rapidamente sem configurar o SQL Server, você pode alterar o perfil do Spring para rodar o banco de dados H2 interno em memória).*
 
 #### **Compilação e Execução**
-1. Instale as dependências necessárias (incluindo o processamento do Lombok) e compile o projeto através do Maven:
+1. Instale as dependências necessárias e compile o projeto através do Maven:
    ```bash
    mvn clean install
    ```
@@ -67,7 +79,7 @@ Este repositório contém a API REST do Sistema Escolar, desenvolvida para geren
 
 #### **📄 Acessando a Documentação da API (Swagger)**
 Com a aplicação rodando, você pode visualizar e testar todos os endpoints interativamente acessando a interface do Swagger no navegador:
-`http://localhost:8080/swagger-ui/index.html` *(ou a rota padrão configurada na sua versão do OpenAPI)*.
+`http://localhost:8080/swagger-ui/index.html`
 
 ---
 
